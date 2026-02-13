@@ -51,15 +51,15 @@ const ProductsSection = () => {
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-card/60 to-transparent" />
                 {p.tag && (
-                  <span className="absolute top-2 right-2 text-[9px] md:text-[10px] font-bold uppercase tracking-wider bg-primary/90 text-primary-foreground px-2 py-0.5 rounded-full">
+                  <span className="absolute top-2 right-2 text-[9px] md:text-[10px] font-bold uppercase tracking-wider bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
                     {p.tag}
                   </span>
                 )}
               </div>
               <div className="p-3 md:p-5">
-                <h3 className="font-heading text-sm md:text-lg font-bold mb-1 leading-tight flex items-center gap-1.5">
+                <h3 className="font-heading text-sm md:text-lg font-bold mb-1 leading-tight flex items-center gap-1.5 text-foreground">
                   <p.icon size={16} className="text-primary flex-shrink-0 md:w-5 md:h-5" />
                   {p.title}
                 </h3>

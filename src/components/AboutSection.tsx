@@ -35,7 +35,7 @@ const AboutSection = () => {
           {highlights.map((h) => (
             <div
               key={h.text}
-              className="inline-flex items-center gap-2 rounded-full border border-border/50 bg-secondary/40 px-4 py-2 text-xs font-medium text-muted-foreground"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-4 py-2 text-xs font-medium text-muted-foreground"
             >
               <h.icon size={14} className="text-primary" />
               {h.text}
@@ -65,7 +65,7 @@ const AboutSection = () => {
             genuine tech solutions to thousands of happy customers across India.
           </p>
 
-          <div className="mt-6 pt-6 border-t border-border/30">
+          <div className="mt-6 pt-6 border-t border-border/50">
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-sm text-foreground">
               {[
                 "Premium Open-Box Laptops",
