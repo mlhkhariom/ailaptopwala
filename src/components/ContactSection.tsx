@@ -1,5 +1,6 @@
 import { useInView } from "@/hooks/useInView";
-import { Phone, Mail, MapPin, MessageCircle, ExternalLink } from "lucide-react";
+import { Phone, Mail, MapPin, MessageCircle, ExternalLink, Navigation } from "lucide-react";
+import { motion } from "framer-motion";
 
 const ContactSection = () => {
   const { ref, inView } = useInView();
@@ -8,23 +9,31 @@ const ContactSection = () => {
     <section id="contact" className="py-16 md:py-24 bg-secondary/20">
       <div
         ref={ref}
-        className={`container mx-auto px-5 max-w-5xl transition-all duration-700 ${
-          inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-        }`}
+        className="container mx-auto px-5 max-w-5xl"
       >
-        <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-extrabold text-center mb-3">
-          Get in <span className="gradient-text">Touch</span>
-        </h2>
-        <div className="section-divider mb-10 md:mb-12" />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-extrabold text-center mb-3">
+            Get in <span className="gradient-text">Touch</span>
+          </h2>
+          <div className="section-divider mb-10 md:mb-12" />
+        </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {/* Contact info */}
-          <div className="glass-card-solid glow-cyan gradient-border p-5 md:p-8 rounded-2xl space-y-5">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="glass-card-solid glow-cyan gradient-border p-5 md:p-8 rounded-2xl space-y-5"
+          >
             <h3 className="font-heading text-base md:text-lg font-bold flex items-center gap-2">
               <Phone className="text-primary" size={20} /> Contact Information
             </h3>
 
-            {/* Quick action buttons for mobile */}
             <div className="grid grid-cols-2 gap-2.5">
               <a
                 href="tel:+919893496163"
@@ -73,10 +82,15 @@ const ContactSection = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Address */}
-          <div className="glass-card-solid glow-cyan gradient-border p-5 md:p-8 rounded-2xl space-y-5">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="glass-card-solid glow-cyan gradient-border p-5 md:p-8 rounded-2xl space-y-5"
+          >
             <h3 className="font-heading text-base md:text-lg font-bold flex items-center gap-2">
               <MapPin className="text-primary" size={20} /> Store Address
             </h3>
@@ -89,7 +103,9 @@ const ContactSection = () => {
                 <br />
                 Madhya Pradesh – 452001
               </p>
-              <p className="text-xs text-primary font-medium mt-2">📍 Near Hotel Shrimaya</p>
+              <p className="flex items-center gap-1.5 text-xs text-primary font-medium mt-2">
+                <Navigation size={12} /> Near Hotel Shrimaya
+              </p>
             </div>
             <a
               href="https://maps.google.com/?q=AI+Laptop+Wala+Indore"
@@ -100,7 +116,6 @@ const ContactSection = () => {
               <ExternalLink size={14} /> Open in Google Maps
             </a>
 
-            {/* Map preview */}
             <div className="rounded-xl overflow-hidden border border-border/30 glow-cyan">
               <iframe
                 title="AI Laptop Wala – Indore"
@@ -113,7 +128,7 @@ const ContactSection = () => {
                 referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

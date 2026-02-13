@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X, Phone } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import logo from "@/assets/logo.png";
 
 const navLinks = [
   { label: "About", href: "#about" },
@@ -19,7 +21,6 @@ const Header = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Lock body scroll when mobile menu open
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -31,9 +32,12 @@ const Header = () => {
         scrolled ? "glass-card-solid shadow-2xl" : "bg-transparent"
       }`}
     >
-      <nav className="container mx-auto flex items-center justify-between px-4 py-3 md:py-4">
-        <a href="#" className="font-heading text-lg md:text-xl font-extrabold gradient-text tracking-tight">
-          AI Laptop Wala
+      <nav className="container mx-auto flex items-center justify-between px-4 py-2.5 md:py-3">
+        <a href="#" className="flex items-center gap-2">
+          <img src={logo} alt="AI Laptop Wala" className="h-9 md:h-10 w-auto" />
+          <span className="font-heading text-base md:text-lg font-extrabold gradient-text tracking-tight hidden sm:inline">
+            AI Laptop Wala
+          </span>
         </a>
 
         {/* Desktop */}
@@ -71,37 +75,47 @@ const Header = () => {
       </nav>
 
       {/* Mobile fullscreen overlay menu */}
-      <div
-        className={`lg:hidden fixed inset-0 top-0 z-40 transition-all duration-300 ${
-          mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
-      >
-        <div className="absolute inset-0 bg-background/98 backdrop-blur-2xl" />
-        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen gap-2 px-8">
-          {navLinks.map((l, i) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className={`text-2xl font-heading font-bold text-foreground hover:text-primary transition-all duration-300 py-3 ${
-                mobileOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-              }`}
-              style={{ transitionDelay: `${i * 60}ms` }}
-              onClick={() => setMobileOpen(false)}
-            >
-              {l.label}
-            </a>
-          ))}
-          <a
-            href="https://wa.me/919893496163"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-4 text-base font-bold text-primary-foreground glow-cyan active:scale-95 transition-transform"
-            onClick={() => setMobileOpen(false)}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="lg:hidden fixed inset-0 top-0 z-40"
           >
-            <Phone size={18} /> WhatsApp Us
-          </a>
-        </div>
-      </div>
+            <div className="absolute inset-0 bg-background/98 backdrop-blur-2xl" />
+            <div className="relative z-10 flex flex-col items-center justify-center min-h-screen gap-1 px-8">
+              <img src={logo} alt="AI Laptop Wala" className="h-16 w-auto mb-6" />
+              {navLinks.map((l, i) => (
+                <motion.a
+                  key={l.href}
+                  href={l.href}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.06 }}
+                  className="text-2xl font-heading font-bold text-foreground hover:text-primary transition-colors py-3"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {l.label}
+                </motion.a>
+              ))}
+              <motion.a
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.35 }}
+                href="https://wa.me/919893496163"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-4 text-base font-bold text-primary-foreground glow-cyan active:scale-95 transition-transform"
+                onClick={() => setMobileOpen(false)}
+              >
+                <Phone size={18} /> WhatsApp Us
+              </motion.a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };

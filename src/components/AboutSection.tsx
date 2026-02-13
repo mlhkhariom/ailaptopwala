@@ -1,5 +1,6 @@
 import { useInView } from "@/hooks/useInView";
-import { Award, MapPin, Calendar } from "lucide-react";
+import { motion } from "framer-motion";
+import { Award, MapPin, Calendar, CheckCircle } from "lucide-react";
 
 const highlights = [
   { icon: Award, text: "15+ Years Industry Expertise" },
@@ -12,19 +13,25 @@ const AboutSection = () => {
 
   return (
     <section id="about" className="py-16 md:py-24">
-      <div
-        ref={ref}
-        className={`container mx-auto px-5 max-w-4xl transition-all duration-700 ${
-          inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-        }`}
-      >
-        <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-extrabold text-center mb-3">
-          About <span className="gradient-text">AI Laptop Wala</span>
-        </h2>
-        <div className="section-divider mb-8 md:mb-10" />
+      <div ref={ref} className="container mx-auto px-5 max-w-4xl">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-extrabold text-center mb-3">
+            About <span className="gradient-text">AI Laptop Wala</span>
+          </h2>
+          <div className="section-divider mb-8 md:mb-10" />
+        </motion.div>
 
         {/* Highlight pills */}
-        <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ delay: 0.2 }}
+          className="flex flex-wrap items-center justify-center gap-3 mb-8"
+        >
           {highlights.map((h) => (
             <div
               key={h.text}
@@ -34,9 +41,14 @@ const AboutSection = () => {
               {h.text}
             </div>
           ))}
-        </div>
+        </motion.div>
 
-        <div className="glass-card-solid glow-cyan p-6 md:p-10 rounded-2xl gradient-border">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          className="glass-card-solid glow-cyan p-6 md:p-10 rounded-2xl gradient-border"
+        >
           <p className="text-muted-foreground leading-relaxed text-sm md:text-base mb-5">
             Founded by <strong className="text-foreground">Mr. Bhagwan Das Asati</strong> in 2017,{" "}
             <strong className="text-foreground">Asati Infotech</strong> has become a household name
@@ -66,13 +78,13 @@ const AboutSection = () => {
                 "After-Sales Support",
               ].map((item) => (
                 <li key={item} className="flex items-center gap-2.5 py-1">
-                  <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-primary" />
+                  <CheckCircle size={14} className="text-primary flex-shrink-0" />
                   <span className="text-xs md:text-sm">{item}</span>
                 </li>
               ))}
             </ul>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
