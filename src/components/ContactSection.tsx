@@ -6,11 +6,8 @@ const ContactSection = () => {
   const { ref, inView } = useInView();
 
   return (
-    <section id="contact" className="py-16 md:py-24 bg-secondary/20">
-      <div
-        ref={ref}
-        className="container mx-auto px-5 max-w-5xl"
-      >
+    <section id="contact" className="py-16 md:py-24 section-alt">
+      <div ref={ref} className="container mx-auto px-5 max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -52,7 +49,7 @@ const ContactSection = () => {
             </div>
 
             <div className="space-y-3 text-sm">
-              <div className="flex items-start gap-3 p-3 rounded-xl bg-secondary/30">
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-muted/50">
                 <Phone size={15} className="text-primary mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-xs text-muted-foreground">Call / WhatsApp</p>
@@ -61,7 +58,7 @@ const ContactSection = () => {
                   </a>
                 </div>
               </div>
-              <div className="flex items-start gap-3 p-3 rounded-xl bg-secondary/30">
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-muted/50">
                 <Phone size={15} className="text-muted-foreground mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-xs text-muted-foreground">Inquiries (Nitin Asati)</p>
@@ -70,7 +67,7 @@ const ContactSection = () => {
                   </a>
                 </div>
               </div>
-              <div className="flex items-start gap-3 p-3 rounded-xl bg-secondary/30">
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-muted/50">
                 <Mail size={15} className="text-primary mt-0.5 flex-shrink-0" />
                 <div>
                   <a href="mailto:contact@ailaptopwala.com" className="text-sm font-medium text-foreground block">
@@ -94,7 +91,7 @@ const ContactSection = () => {
             <h3 className="font-heading text-base md:text-lg font-bold flex items-center gap-2">
               <MapPin className="text-primary" size={20} /> Store Address
             </h3>
-            <div className="p-4 rounded-xl bg-secondary/30">
+            <div className="p-4 rounded-xl bg-muted/50">
               <p className="text-sm text-foreground font-semibold mb-1">AI Laptop Wala (Asati Infotech)</p>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 LG-21, B-Block, Silver Mall
@@ -116,7 +113,7 @@ const ContactSection = () => {
               <ExternalLink size={14} /> Open in Google Maps
             </a>
 
-            <div className="rounded-xl overflow-hidden border border-border/30 glow-cyan">
+            <div className="rounded-xl overflow-hidden border border-border/50 glow-cyan">
               <iframe
                 title="AI Laptop Wala – Indore"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3680.0!2d75.857!3d22.7196!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sAI+Laptop+Wala!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"

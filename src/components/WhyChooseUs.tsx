@@ -17,7 +17,7 @@ const WhyChooseUs = () => {
   const { ref, inView } = useInView();
 
   return (
-    <section id="why-us" className="py-16 md:py-24 bg-secondary/20">
+    <section id="why-us" className="py-16 md:py-24 section-alt">
       <div ref={ref} className="container mx-auto px-5">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

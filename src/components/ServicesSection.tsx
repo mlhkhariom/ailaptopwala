@@ -18,11 +18,8 @@ const ServicesSection = () => {
   const { ref, inView } = useInView();
 
   return (
-    <section id="services" className="py-16 md:py-24 bg-secondary/20">
-      <div
-        ref={ref}
-        className="container mx-auto px-5 max-w-5xl"
-      >
+    <section id="services" className="py-16 md:py-24 section-alt">
+      <div ref={ref} className="container mx-auto px-5 max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
