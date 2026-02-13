@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -47,6 +47,7 @@
 
     --cyan-glow: 187 100% 50%;
     --navy-deep: 216 71% 15%;
+    --success: 142 70% 45%;
   }
 }
 
@@ -56,45 +57,65 @@
   }
 
   body {
-    @apply bg-background text-foreground font-body;
+    @apply bg-background text-foreground font-body antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
   }
 
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 4rem;
   }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-card/60 backdrop-blur-xl border border-border/50 rounded-xl;
+    @apply bg-card/60 backdrop-blur-xl border border-border/40 rounded-2xl;
+  }
+
+  .glass-card-solid {
+    background: linear-gradient(135deg, hsl(220 40% 10% / 0.9), hsl(220 40% 6% / 0.95));
+    @apply backdrop-blur-xl border border-border/30 rounded-2xl;
   }
 
   .glow-cyan {
-    box-shadow: 0 0 20px hsl(187 100% 50% / 0.15), 0 0 60px hsl(187 100% 50% / 0.05);
+    box-shadow: 0 0 20px hsl(187 100% 50% / 0.12), 0 0 60px hsl(187 100% 50% / 0.04), inset 0 1px 0 hsl(187 100% 50% / 0.05);
+  }
+
+  .glow-cyan-hover {
+    transition: box-shadow 0.4s ease, transform 0.3s ease;
   }
 
   .glow-cyan-hover:hover {
-    box-shadow: 0 0 30px hsl(187 100% 50% / 0.3), 0 0 80px hsl(187 100% 50% / 0.1);
+    box-shadow: 0 0 30px hsl(187 100% 50% / 0.25), 0 0 80px hsl(187 100% 50% / 0.08), inset 0 1px 0 hsl(187 100% 50% / 0.1);
   }
 
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-[hsl(187,100%,50%)] to-[hsl(210,100%,70%)];
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(187 100% 50%), hsl(210 100% 70%), hsl(187 100% 60%));
   }
 
-  .section-fade-in {
-    animation: sectionFadeIn 0.8s ease-out forwards;
-    opacity: 0;
+  .gradient-border {
+    position: relative;
+  }
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, hsl(187 100% 50% / 0.3), transparent, hsl(187 100% 50% / 0.1));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
   }
 
-  @keyframes sectionFadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .section-divider {
+    @apply w-20 h-1 mx-auto rounded-full;
+    background: linear-gradient(90deg, hsl(187 100% 50%), hsl(210 100% 70%));
   }
 
   @keyframes whatsappPulse {
@@ -102,11 +123,49 @@
       box-shadow: 0 0 0 0 hsl(142 70% 45% / 0.7);
     }
     50% {
-      box-shadow: 0 0 0 15px hsl(142 70% 45% / 0);
+      box-shadow: 0 0 0 12px hsl(142 70% 45% / 0);
     }
   }
 
   .whatsapp-pulse {
     animation: whatsappPulse 2s infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .animate-float {
+    animation: float 4s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .shimmer-badge {
+    background: linear-gradient(90deg, hsl(187 100% 50% / 0.1), hsl(187 100% 50% / 0.3), hsl(187 100% 50% / 0.1));
+    background-size: 200% 100%;
+    animation: shimmer 3s infinite;
+  }
+
+  /* Mobile app-like touch styles */
+  @media (max-width: 768px) {
+    .touch-card {
+      @apply active:scale-[0.98] transition-transform duration-150;
+    }
+  }
+
+  /* Stat counter styling */
+  .stat-item {
+    @apply text-center;
+  }
+  .stat-number {
+    @apply font-heading text-3xl md:text-4xl font-bold text-primary;
+  }
+  .stat-label {
+    @apply text-xs md:text-sm text-muted-foreground mt-1;
   }
 }
