@@ -92,7 +92,7 @@ const ContactSection = () => {
               <p className="text-xs text-primary font-medium mt-2">📍 Near Hotel Shrimaya</p>
             </div>
             <a
-              href="https://maps.google.com/?q=Silver+Mall+RNT+Marg+Indore"
+              href="https://maps.google.com/?q=AI+Laptop+Wala+Indore"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 w-full rounded-xl border border-primary/30 py-3 text-sm font-semibold text-primary hover:bg-primary/5 transition-colors active:scale-95 touch-card"
@@ -103,8 +103,8 @@ const ContactSection = () => {
             {/* Map preview */}
             <div className="rounded-xl overflow-hidden border border-border/30 glow-cyan">
               <iframe
-                title="AI Laptop Wala – Silver Mall, Indore"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3680.123456789!2d75.8571!3d22.7196!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3962fd0b0bffffff%3A0xsilvermallindore!2sSilver+Mall%2C+RNT+Marg%2C+Indore!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                title="AI Laptop Wala – Indore"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3680.0!2d75.857!3d22.7196!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sAI+Laptop+Wala!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
                 width="100%"
                 height="200"
                 style={{ border: 0 }}
