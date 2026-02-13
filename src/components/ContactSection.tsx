@@ -1,82 +1,118 @@
 import { useInView } from "@/hooks/useInView";
-import { Phone, Mail, MapPin } from "lucide-react";
+import { Phone, Mail, MapPin, MessageCircle, ExternalLink } from "lucide-react";
 
 const ContactSection = () => {
   const { ref, inView } = useInView();
 
   return (
-    <section id="contact" className="py-20 md:py-28">
+    <section id="contact" className="py-16 md:py-24 bg-secondary/20">
       <div
         ref={ref}
-        className={`container mx-auto px-4 max-w-5xl transition-all duration-700 ${
+        className={`container mx-auto px-5 max-w-5xl transition-all duration-700 ${
           inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         }`}
       >
-        <h2 className="font-heading text-3xl md:text-4xl font-bold text-center mb-4">
+        <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-extrabold text-center mb-3">
           Get in <span className="gradient-text">Touch</span>
         </h2>
-        <div className="w-16 h-1 bg-primary mx-auto mb-12 rounded-full" />
+        <div className="section-divider mb-10 md:mb-12" />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {/* Contact info */}
-          <div className="glass-card glow-cyan p-8 rounded-2xl space-y-6">
-            <h3 className="font-heading text-xl font-semibold flex items-center gap-2">
-              <Phone className="text-primary" size={22} /> Contact Information
+          <div className="glass-card-solid glow-cyan gradient-border p-5 md:p-8 rounded-2xl space-y-5">
+            <h3 className="font-heading text-base md:text-lg font-bold flex items-center gap-2">
+              <Phone className="text-primary" size={20} /> Contact Information
             </h3>
-            <div className="space-y-4 text-sm">
-              <p>
-                <span className="text-muted-foreground">Call / WhatsApp:</span>
-                <br />
-                <a href="tel:+919893496163" className="text-primary font-medium hover:underline">
-                  +91 98934 96163
-                </a>
-              </p>
-              <p>
-                <span className="text-muted-foreground">Inquiries (Nitin Asati):</span>
-                <br />
-                <a href="tel:+919303558009" className="text-foreground font-medium hover:underline">
-                  +91 93035 58009
-                </a>
-              </p>
-              <p className="flex items-start gap-2">
-                <Mail className="text-primary mt-0.5" size={16} />
-                <span>
-                  <a href="mailto:contact@ailaptopwala.com" className="text-foreground hover:text-primary transition-colors">
+
+            {/* Quick action buttons for mobile */}
+            <div className="grid grid-cols-2 gap-2.5">
+              <a
+                href="tel:+919893496163"
+                className="flex items-center gap-2 rounded-xl bg-primary/10 border border-primary/20 px-3 py-3 text-xs font-semibold text-primary active:scale-95 transition-transform touch-card"
+              >
+                <Phone size={14} /> Call Now
+              </a>
+              <a
+                href="https://wa.me/919893496163"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 rounded-xl bg-[hsl(142,70%,45%)]/10 border border-[hsl(142,70%,45%)]/20 px-3 py-3 text-xs font-semibold text-[hsl(142,70%,45%)] active:scale-95 transition-transform touch-card"
+              >
+                <MessageCircle size={14} /> WhatsApp
+              </a>
+            </div>
+
+            <div className="space-y-3 text-sm">
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-secondary/30">
+                <Phone size={15} className="text-primary mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-xs text-muted-foreground">Call / WhatsApp</p>
+                  <a href="tel:+919893496163" className="text-sm font-semibold text-primary">
+                    +91 98934 96163
+                  </a>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-secondary/30">
+                <Phone size={15} className="text-muted-foreground mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-xs text-muted-foreground">Inquiries (Nitin Asati)</p>
+                  <a href="tel:+919303558009" className="text-sm font-medium text-foreground">
+                    +91 93035 58009
+                  </a>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-secondary/30">
+                <Mail size={15} className="text-primary mt-0.5 flex-shrink-0" />
+                <div>
+                  <a href="mailto:contact@ailaptopwala.com" className="text-sm font-medium text-foreground block">
                     contact@ailaptopwala.com
                   </a>
-                  <br />
-                  <a href="mailto:asatiinfotech@gmail.com" className="text-muted-foreground hover:text-primary transition-colors">
+                  <a href="mailto:asatiinfotech@gmail.com" className="text-xs text-muted-foreground">
                     asatiinfotech@gmail.com
                   </a>
-                </span>
-              </p>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Address */}
-          <div className="glass-card glow-cyan p-8 rounded-2xl space-y-6">
-            <h3 className="font-heading text-xl font-semibold flex items-center gap-2">
-              <MapPin className="text-primary" size={22} /> Store Address
+          <div className="glass-card-solid glow-cyan gradient-border p-5 md:p-8 rounded-2xl space-y-5">
+            <h3 className="font-heading text-base md:text-lg font-bold flex items-center gap-2">
+              <MapPin className="text-primary" size={20} /> Store Address
             </h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              <strong className="text-foreground">AI Laptop Wala (Asati Infotech)</strong>
-              <br />
-              LG-21, B-Block, Silver Mall
-              <br />
-              RNT Marg, Indore
-              <br />
-              Madhya Pradesh – 452001
-              <br />
-              <span className="text-primary">Near Hotel Shrimaya</span>
-            </p>
+            <div className="p-4 rounded-xl bg-secondary/30">
+              <p className="text-sm text-foreground font-semibold mb-1">AI Laptop Wala (Asati Infotech)</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                LG-21, B-Block, Silver Mall
+                <br />
+                RNT Marg, Indore
+                <br />
+                Madhya Pradesh – 452001
+              </p>
+              <p className="text-xs text-primary font-medium mt-2">📍 Near Hotel Shrimaya</p>
+            </div>
             <a
               href="https://maps.google.com/?q=Silver+Mall+RNT+Marg+Indore"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+              className="flex items-center justify-center gap-2 w-full rounded-xl border border-primary/30 py-3 text-sm font-semibold text-primary hover:bg-primary/5 transition-colors active:scale-95 touch-card"
             >
-              <MapPin size={14} /> Open in Google Maps
+              <ExternalLink size={14} /> Open in Google Maps
             </a>
+
+            {/* Map preview */}
+            <div className="rounded-xl overflow-hidden border border-border/30 glow-cyan">
+              <iframe
+                title="AI Laptop Wala – Silver Mall, Indore"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3680.123456789!2d75.8571!3d22.7196!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3962fd0b0bffffff%3A0xsilvermallindore!2sSilver+Mall%2C+RNT+Marg%2C+Indore!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                width="100%"
+                height="200"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
           </div>
         </div>
       </div>
