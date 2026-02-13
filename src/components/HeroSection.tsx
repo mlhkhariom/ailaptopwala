@@ -109,11 +109,10 @@ const HeroSection = () => (
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.65 }}
-        className="grid grid-cols-3 gap-3 md:gap-4 max-w-md mx-auto mb-9"
+        className="grid grid-cols-2 gap-3 md:gap-4 max-w-xs mx-auto mb-9"
       >
         {[
           { num: "15+", label: "Years Experience" },
-          { num: "5K+", label: "Happy Customers" },
           { num: "100%", label: "Genuine Products" },
         ].map((s) => (
           <div
