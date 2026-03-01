@@ -105,7 +105,7 @@ const ContactSection = () => {
               </p>
             </div>
             <a
-              href="https://maps.google.com/?q=AI+Laptop+Wala+Indore"
+              href="https://www.google.com/maps/place/AI+Laptop+Wala/@22.803601,75.7696716,17z"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 w-full rounded-xl border border-primary/30 py-3 text-sm font-semibold text-primary hover:bg-primary/5 transition-colors active:scale-95 touch-card"
@@ -116,7 +116,7 @@ const ContactSection = () => {
             <div className="rounded-xl overflow-hidden border border-border/50 glow-cyan">
               <iframe
                 title="AI Laptop Wala – Indore"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3680.0!2d75.857!3d22.7196!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sAI+Laptop+Wala!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d94094.71485060472!2d75.76967158818314!3d22.80360104831471!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3962fd491af71639%3A0xcb4fc8507118f6c1!2sAI%20Laptop%20Wala%20%E2%80%93%20Second-Hand%20%26%20Refurbished%20Laptop%20Store%20in%20Indore!5e1!3m2!1sen!2sin!4v1772393668409!5m2!1sen!2sin"
                 width="100%"
                 height="200"
                 style={{ border: 0 }}
