@@ -37,6 +37,7 @@ const Footer = () => (
               { label: "Buy Laptops", to: "/products" },
               { label: "Repair Services", to: "/repair" },
               { label: "About Us", to: "/about" },
+              { label: "Blog", to: "/blog" },
               { label: "Contact Us", to: "/contact" },
             ].map((l) => (
               <li key={l.to}>
