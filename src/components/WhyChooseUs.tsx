@@ -8,7 +8,7 @@ const features = [
   { icon: Cpu, title: "AI-Integrated Systems", desc: "Future-ready machines with cutting-edge AI capabilities." },
   { icon: RefreshCcw, title: "Certified Refurbished", desc: "Like-new refurbished laptops & desktops at best prices." },
   { icon: Wrench, title: "Home Repair Service", desc: "Doorstep laptop & desktop repair service in Indore." },
-  { icon: CalendarCheck, title: "Trusted Since 2017", desc: "Years of excellence serving thousands of customers." },
+  { icon: CalendarCheck, title: "Trusted Since 2011", desc: "Years of excellence serving thousands of customers." },
   { icon: Users, title: "Expert Consultation", desc: "Personalized guidance to find your perfect machine." },
   { icon: HeadphonesIcon, title: "After-Sales Support", desc: "Dedicated support long after your purchase." },
 ];

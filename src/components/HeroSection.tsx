@@ -49,7 +49,7 @@ const HeroSection = () => (
         transition={{ delay: 0.15 }}
         className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-xs font-semibold text-[hsl(32,100%,75%)] border border-[hsl(32,100%,50%)]/25 bg-[hsl(32,100%,50%)]/10 backdrop-blur-sm mb-6"
       >
-        <Zap size={12} className="text-[hsl(45,100%,60%)]" /> Powered by Asati Infotech — Since 2017
+        <Zap size={12} className="text-[hsl(45,100%,60%)]" /> Powered by Asati Infotech — Since 2011
       </motion.div>
 
       {/* Heading */}
