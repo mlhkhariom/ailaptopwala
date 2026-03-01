@@ -6,6 +6,7 @@ import {
   MonitorSmartphone, Palette, Calendar, Package, Tag, Star
 } from "lucide-react";
 import { Product } from "@/hooks/useProducts";
+import SEOHead from "@/components/SEOHead";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
@@ -28,20 +29,13 @@ const ProductDetail = () => {
       try {
         const params = new URLSearchParams({ table: cat, id: id || "" });
         const res = await fetch(`${SUPABASE_URL}/functions/v1/fetch-products?${params}`, {
-          headers: {
-            apikey: SUPABASE_KEY,
-            "Content-Type": "application/json",
-          },
+          headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" },
         });
         if (!res.ok) throw new Error("Failed to fetch product");
         const data = await res.json();
-        if (data.product) {
-          setProduct(data.product);
-        } else if (data.products?.length > 0) {
-          setProduct(data.products[0]);
-        } else {
-          throw new Error("Product not found");
-        }
+        if (data.product) setProduct(data.product);
+        else if (data.products?.length > 0) setProduct(data.products[0]);
+        else throw new Error("Product not found");
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -94,11 +88,78 @@ const ProductDetail = () => {
     { icon: Star, label: "Special Feature", value: product.specialFeature },
   ].filter(s => s.value) : [];
 
+  // Dynamic Product Schema for Google
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": productName,
+    "image": [product.primaryImage, product.secondaryImage].filter(Boolean),
+    "description": cat !== "accessories"
+      ? `${productName} - ${product.processor || ""} ${product.ram ? product.ram + "GB RAM" : ""} ${product.storage ? product.storage + "GB " + (product.storageType || "SSD") : ""} ${product.screenSize || ""} ${product.condition || ""}. Available at AI Laptop Wala Indore.`
+      : `${productName} available at AI Laptop Wala Indore at best price.`,
+    "brand": cat !== "accessories" && product.brand ? { "@type": "Brand", "name": product.brand } : undefined,
+    "sku": `${cat.toUpperCase()}-${product.id}`,
+    "category": cat === "laptops" ? "Laptops" : cat === "desktops" ? "Desktop Computers" : "Computer Accessories",
+    ...(cat !== "accessories" && product.processor ? {
+      "additionalProperty": [
+        product.processor ? { "@type": "PropertyValue", "name": "Processor", "value": product.processor } : null,
+        product.ram > 0 ? { "@type": "PropertyValue", "name": "RAM", "value": `${product.ram} GB` } : null,
+        product.storage > 0 ? { "@type": "PropertyValue", "name": "Storage", "value": `${product.storage} GB ${product.storageType || "SSD"}` } : null,
+        product.screenSize ? { "@type": "PropertyValue", "name": "Screen Size", "value": product.screenSize } : null,
+        product.graphics ? { "@type": "PropertyValue", "name": "Graphics", "value": product.graphics } : null,
+        product.generation ? { "@type": "PropertyValue", "name": "Generation", "value": product.generation } : null,
+      ].filter(Boolean)
+    } : {}),
+    "offers": {
+      "@type": "Offer",
+      "url": `https://ailaptopwala.com/products/${cat}/${product.id}`,
+      "priceCurrency": "INR",
+      "price": product.price > 0 ? product.price : undefined,
+      "availability": product.stockQuantity > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "AI Laptop Wala",
+        "url": "https://ailaptopwala.com"
+      },
+      "itemCondition": product.condition?.toLowerCase().includes("new") ? "https://schema.org/NewCondition" : "https://schema.org/RefurbishedCondition",
+      ...(product.warranty ? { "warranty": { "@type": "WarrantyPromise", "durationOfWarranty": { "@type": "QuantitativeValue", "value": product.warranty, "unitCode": "MON" } } } : {})
+    }
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ailaptopwala.com" },
+      { "@type": "ListItem", "position": 2, "name": "Products", "item": "https://ailaptopwala.com/products" },
+      { "@type": "ListItem", "position": 3, "name": cat.charAt(0).toUpperCase() + cat.slice(1), "item": `https://ailaptopwala.com/products?cat=${cat}` },
+      { "@type": "ListItem", "position": 4, "name": productName, "item": `https://ailaptopwala.com/products/${cat}/${product.id}` },
+    ]
+  };
+
+  const seoTitle = cat !== "accessories"
+    ? `${productName} – ${product.processor || ""} ${product.ram ? product.ram + "GB" : ""} ${product.storage ? product.storage + "GB" : ""} | Buy in Indore`
+    : `${productName} | Buy at Best Price in Indore`;
+
+  const seoDesc = cat !== "accessories"
+    ? `Buy ${productName} at AI Laptop Wala Indore. ${product.processor || ""}, ${product.ram ? product.ram + "GB RAM" : ""}, ${product.storage ? product.storage + "GB " + (product.storageType || "SSD") : ""}. ${product.condition || ""}. ${product.price > 0 ? "Price: ₹" + product.price.toLocaleString("en-IN") + "." : ""} ${product.warranty ? product.warranty + " months warranty." : ""} Best laptop deal in Indore, Madhya Pradesh.`
+    : `Buy ${productName} at best price at AI Laptop Wala Indore. ${product.price > 0 ? "Price: ₹" + product.price.toLocaleString("en-IN") + "." : ""} Fast delivery in Indore, Madhya Pradesh.`;
+
   return (
     <div className="pt-20 pb-16">
+      <SEOHead
+        title={seoTitle}
+        description={seoDesc}
+        canonical={`/products/${cat}/${product.id}`}
+        ogImage={product.primaryImage || undefined}
+        ogType="product"
+        keywords={`${productName}, ${product.brand || ""} ${cat} Indore, buy ${cat === "laptops" ? "laptop" : cat === "desktops" ? "desktop" : "accessories"} Indore, ${product.brand || ""} price Indore, refurbished ${cat} Indore, ${productName} price`}
+        jsonLd={[productSchema, breadcrumbSchema]}
+      />
+
       {/* Breadcrumb */}
       <div className="container mx-auto px-5 py-4">
-        <nav className="flex items-center gap-2 text-sm text-muted-foreground">
+        <nav className="flex items-center gap-2 text-sm text-muted-foreground" aria-label="Breadcrumb">
           <Link to="/" className="hover:text-primary transition-colors">Home</Link>
           <span>/</span>
           <Link to="/products" className="hover:text-primary transition-colors">Products</Link>
@@ -112,46 +173,27 @@ const ProductDetail = () => {
       <div className="container mx-auto px-5">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Image Section */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-          >
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
             <div className="glass-card-solid gradient-border rounded-2xl overflow-hidden">
               <div className="relative aspect-square bg-muted/20 flex items-center justify-center">
                 {currentImage ? (
-                  <img
-                    src={currentImage}
-                    alt={productName}
-                    className="w-full h-full object-contain p-4"
-                  />
+                  <img src={currentImage} alt={`${productName} - Buy at AI Laptop Wala Indore`} className="w-full h-full object-contain p-4" />
                 ) : (
                   <Monitor size={80} className="text-muted-foreground/20" />
                 )}
                 {discount > 0 && (
-                  <span className="absolute top-4 right-4 text-sm font-bold bg-primary text-primary-foreground px-3 py-1.5 rounded-xl">
-                    {discount}% OFF
-                  </span>
+                  <span className="absolute top-4 right-4 text-sm font-bold bg-primary text-primary-foreground px-3 py-1.5 rounded-xl">{discount}% OFF</span>
                 )}
                 {product.stockQuantity > 0 && product.stockQuantity <= 5 && (
-                  <span className="absolute top-4 left-4 text-xs font-bold uppercase tracking-wider bg-destructive text-destructive-foreground px-3 py-1.5 rounded-xl">
-                    Only {product.stockQuantity} left
-                  </span>
+                  <span className="absolute top-4 left-4 text-xs font-bold uppercase tracking-wider bg-destructive text-destructive-foreground px-3 py-1.5 rounded-xl">Only {product.stockQuantity} left</span>
                 )}
               </div>
-              {/* Thumbnail switcher */}
               {product.secondaryImage && (
                 <div className="flex gap-3 p-4 border-t border-border/50">
-                  <button
-                    onClick={() => setActiveImage("primary")}
-                    className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-colors ${activeImage === "primary" ? "border-primary" : "border-border/50"}`}
-                  >
+                  <button onClick={() => setActiveImage("primary")} className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-colors ${activeImage === "primary" ? "border-primary" : "border-border/50"}`}>
                     <img src={product.primaryImage} alt="" className="w-full h-full object-cover" />
                   </button>
-                  <button
-                    onClick={() => setActiveImage("secondary")}
-                    className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-colors ${activeImage === "secondary" ? "border-primary" : "border-border/50"}`}
-                  >
+                  <button onClick={() => setActiveImage("secondary")} className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-colors ${activeImage === "secondary" ? "border-primary" : "border-border/50"}`}>
                     <img src={product.secondaryImage} alt="" className="w-full h-full object-cover" />
                   </button>
                 </div>
@@ -160,36 +202,19 @@ const ProductDetail = () => {
           </motion.div>
 
           {/* Details Section */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="flex flex-col"
-          >
+          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="flex flex-col">
             {cat !== "accessories" && product.brand && (
               <span className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">{product.brand}</span>
             )}
-            <h1 className="font-heading text-2xl md:text-3xl lg:text-4xl font-black mb-4 text-foreground">
-              {productName}
-            </h1>
+            <h1 className="font-heading text-2xl md:text-3xl lg:text-4xl font-black mb-4 text-foreground">{productName}</h1>
 
             {/* Price */}
             <div className="flex items-baseline gap-3 mb-6">
               {product.price > 0 ? (
                 <>
-                  <span className="font-heading text-3xl md:text-4xl font-black text-primary">
-                    ₹{product.price.toLocaleString("en-IN")}
-                  </span>
-                  {discount > 0 && (
-                    <span className="text-lg text-muted-foreground line-through">
-                      ₹{product.originalPrice.toLocaleString("en-IN")}
-                    </span>
-                  )}
-                  {discount > 0 && (
-                    <span className="text-sm font-bold text-[hsl(var(--success))] bg-[hsl(var(--success))]/10 px-2 py-0.5 rounded-lg">
-                      Save {discount}%
-                    </span>
-                  )}
+                  <span className="font-heading text-3xl md:text-4xl font-black text-primary">₹{product.price.toLocaleString("en-IN")}</span>
+                  {discount > 0 && <span className="text-lg text-muted-foreground line-through">₹{product.originalPrice.toLocaleString("en-IN")}</span>}
+                  {discount > 0 && <span className="text-sm font-bold text-[hsl(var(--success))] bg-[hsl(var(--success))]/10 px-2 py-0.5 rounded-lg">Save {discount}%</span>}
                 </>
               ) : (
                 <span className="font-heading text-2xl font-bold text-primary">Contact for Price</span>
@@ -200,9 +225,7 @@ const ProductDetail = () => {
             {product.stockQuantity > 0 && (
               <div className="flex items-center gap-2 mb-6">
                 <span className={`w-2.5 h-2.5 rounded-full ${product.stockQuantity <= 5 ? "bg-destructive" : "bg-[hsl(var(--success))]"}`} />
-                <span className="text-sm text-muted-foreground">
-                  {product.stockQuantity <= 5 ? `Only ${product.stockQuantity} left in stock` : "In Stock"}
-                </span>
+                <span className="text-sm text-muted-foreground">{product.stockQuantity <= 5 ? `Only ${product.stockQuantity} left in stock` : "In Stock"}</span>
               </div>
             )}
 
@@ -231,7 +254,6 @@ const ProductDetail = () => {
               >
                 <MessageCircle size={20} /> Buy on WhatsApp
               </a>
-
               <div className="glass-card-solid gradient-border rounded-xl p-4 flex items-start gap-3">
                 <ShieldCheck size={20} className="text-primary flex-shrink-0 mt-0.5" />
                 <div>

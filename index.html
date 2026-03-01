@@ -241,31 +241,28 @@
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://ailaptopwala.com"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Products",
-          "item": "https://ailaptopwala.com/#products"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Services",
-          "item": "https://ailaptopwala.com/#services"
-        },
-        {
-          "@type": "ListItem",
-          "position": 4,
-          "name": "Contact",
-          "item": "https://ailaptopwala.com/#contact"
-        }
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ailaptopwala.com" },
+        { "@type": "ListItem", "position": 2, "name": "Products", "item": "https://ailaptopwala.com/products" },
+        { "@type": "ListItem", "position": 3, "name": "Repair Services", "item": "https://ailaptopwala.com/repair" },
+        { "@type": "ListItem", "position": 4, "name": "About", "item": "https://ailaptopwala.com/about" },
+        { "@type": "ListItem", "position": 5, "name": "Contact", "item": "https://ailaptopwala.com/contact" }
       ]
+    }
+    </script>
+
+    <!-- JSON-LD: WebSite with SearchAction -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "AI Laptop Wala",
+      "alternateName": ["AI Laptop Wala Indore", "Asati Infotech"],
+      "url": "https://ailaptopwala.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://ailaptopwala.com/products?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
     }
     </script>
   </head>
