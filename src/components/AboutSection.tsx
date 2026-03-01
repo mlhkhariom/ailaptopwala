@@ -5,7 +5,7 @@ import { Award, MapPin, Calendar, CheckCircle } from "lucide-react";
 const highlights = [
   { icon: Award, text: "15+ Years Industry Expertise" },
   { icon: MapPin, text: "Silver Mall, Indore" },
-  { icon: Calendar, text: "Established 2017" },
+  { icon: Calendar, text: "Established 2011" },
 ];
 
 const AboutSection = () => {
@@ -50,7 +50,7 @@ const AboutSection = () => {
           className="glass-card-solid glow-cyan p-6 md:p-10 rounded-2xl gradient-border"
         >
           <p className="text-muted-foreground leading-relaxed text-sm md:text-base mb-5">
-            Founded by <strong className="text-foreground">Mr. Bhagwan Das Asati</strong> in 2017,{" "}
+            Founded by <strong className="text-foreground">Mr. Bhagwan Das Asati</strong> in 2011,{" "}
             <strong className="text-foreground">Asati Infotech</strong> has become a household name
             in Indore's tech market under the brand{" "}
             <span className="text-primary font-semibold">AI Laptop Wala</span>.
