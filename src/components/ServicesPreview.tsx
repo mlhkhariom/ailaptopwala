@@ -2,7 +2,7 @@ import { useInView } from "@/hooks/useInView";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Wrench, Phone, Clock, MapPin, CheckCircle, PhoneCall, ArrowRight } from "lucide-react";
-import homeRepairImg from "@/assets/home-repair.jpg";
+import homeRepairImg from "@/assets/homeservies.jpeg";
 
 const services = [
   "Laptop Screen Replacement",
