@@ -3,17 +3,29 @@ import { useProducts, Product } from "@/hooks/useProducts";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
-  Monitor, MessageCircle, Loader2, SlidersHorizontal, X, ChevronLeft, ChevronRight, ArrowUpDown, ShieldCheck
+  Monitor, MessageCircle, Loader2, SlidersHorizontal, X, ChevronLeft, ChevronRight, ArrowUpDown, ShieldCheck, Laptop, PcCase, Headphones
 } from "lucide-react";
 
 const BRANDS = ["Apple", "Dell", "HP", "Lenovo", "Asus", "Acer"];
 const RAM_OPTIONS = [4, 8, 16, 32];
 const STORAGE_OPTIONS = [128, 256, 512, 1024];
 
-const ProductCard = ({ product }: { product: Product }) => {
+type Category = "laptops" | "desktops" | "accessories";
+
+const CATEGORIES: { key: Category; label: string; icon: any }[] = [
+  { key: "laptops", label: "Laptops", icon: Laptop },
+  { key: "desktops", label: "Desktops", icon: PcCase },
+  { key: "accessories", label: "Accessories", icon: Headphones },
+];
+
+const ProductCard = ({ product, category }: { product: Product; category: Category }) => {
   const discount = product.originalPrice > product.price
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
+
+  const productName = category === "accessories"
+    ? (product.name || "Accessory")
+    : `${product.brand} ${product.model}`;
 
   return (
     <motion.div
@@ -24,7 +36,7 @@ const ProductCard = ({ product }: { product: Product }) => {
         {product.primaryImage ? (
           <img
             src={product.primaryImage}
-            alt={`${product.brand} ${product.model}`}
+            alt={productName}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
           />
@@ -34,7 +46,7 @@ const ProductCard = ({ product }: { product: Product }) => {
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-card/50 to-transparent" />
-        {product.stockQuantity <= 5 && product.stockQuantity > 0 && (
+        {product.stockQuantity > 0 && product.stockQuantity <= 5 && (
           <span className="absolute top-2.5 left-2.5 text-[10px] font-bold uppercase tracking-wider bg-destructive text-destructive-foreground px-2.5 py-1 rounded-lg">
             Only {product.stockQuantity} left
           </span>
@@ -47,30 +59,42 @@ const ProductCard = ({ product }: { product: Product }) => {
       </div>
       <div className="p-4">
         <h3 className="font-heading text-sm md:text-base font-bold mb-2 leading-tight text-foreground">
-          {product.brand} {product.model}
+          {productName}
         </h3>
-        <div className="flex flex-wrap gap-1.5 mb-3">
-          {product.ram > 0 && (
-            <span className="text-[10px] bg-muted px-2 py-0.5 rounded-md text-muted-foreground font-medium">{product.ram}GB RAM</span>
-          )}
-          {product.storage > 0 && (
-            <span className="text-[10px] bg-muted px-2 py-0.5 rounded-md text-muted-foreground font-medium">{product.storage}GB {product.storageType || 'SSD'}</span>
-          )}
-          {product.processor && (
-            <span className="text-[10px] bg-muted px-2 py-0.5 rounded-md text-muted-foreground font-medium">{product.processor}</span>
-          )}
-        </div>
-        <div className="flex items-baseline gap-2 mb-1">
-          {discount > 0 && (
-            <span className="text-xs text-muted-foreground line-through">₹{product.originalPrice.toLocaleString('en-IN')}</span>
-          )}
-        </div>
-        <div className="flex items-baseline gap-2 mb-3">
-          <span className="font-heading text-lg md:text-xl font-bold text-primary">₹{product.price.toLocaleString('en-IN')}</span>
-        </div>
-        <p className="text-[10px] text-muted-foreground mb-3">{product.condition || "Refurbished"}</p>
+        {category !== "accessories" && (
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {product.ram > 0 && (
+              <span className="text-[10px] bg-muted px-2 py-0.5 rounded-md text-muted-foreground font-medium">{product.ram}GB RAM</span>
+            )}
+            {product.storage > 0 && (
+              <span className="text-[10px] bg-muted px-2 py-0.5 rounded-md text-muted-foreground font-medium">{product.storage}GB {product.storageType || 'SSD'}</span>
+            )}
+            {product.processor && (
+              <span className="text-[10px] bg-muted px-2 py-0.5 rounded-md text-muted-foreground font-medium">{product.processor}</span>
+            )}
+          </div>
+        )}
+        {product.price > 0 ? (
+          <>
+            {discount > 0 && (
+              <div className="flex items-baseline gap-2 mb-1">
+                <span className="text-xs text-muted-foreground line-through">₹{product.originalPrice.toLocaleString('en-IN')}</span>
+              </div>
+            )}
+            <div className="flex items-baseline gap-2 mb-3">
+              <span className="font-heading text-lg md:text-xl font-bold text-primary">₹{product.price.toLocaleString('en-IN')}</span>
+            </div>
+          </>
+        ) : (
+          <div className="mb-3">
+            <span className="text-sm font-semibold text-primary">Contact for Price</span>
+          </div>
+        )}
+        {category !== "accessories" && product.condition && (
+          <p className="text-[10px] text-muted-foreground mb-3">{product.condition}</p>
+        )}
         <a
-          href={`https://wa.me/919893496163?text=Hi%2C%20I'm%20interested%20in%20${encodeURIComponent(product.brand + ' ' + product.model)}%20(₹${product.price})`}
+          href={`https://wa.me/919893496163?text=Hi%2C%20I'm%20interested%20in%20${encodeURIComponent(productName)}${product.price > 0 ? `%20(₹${product.price})` : ''}`}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 w-full rounded-xl bg-[hsl(142,70%,45%)] py-2.5 text-xs font-bold text-white hover:bg-[hsl(142,70%,40%)] transition-colors active:scale-95"
@@ -83,11 +107,11 @@ const ProductCard = ({ product }: { product: Product }) => {
 };
 
 const Products = () => {
-  const { products, total, loading, error } = useProducts("laptops", 100);
+  const [category, setCategory] = useState<Category>("laptops");
+  const { products, total, loading, error } = useProducts(category, 100);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedRam, setSelectedRam] = useState<number[]>([]);
   const [selectedStorage, setSelectedStorage] = useState<number[]>([]);
-  const [budgetRange, setBudgetRange] = useState<[number, number]>([0, 200000]);
   const [sortBy, setSortBy] = useState<"featured" | "price-low" | "price-high">("featured");
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
@@ -95,20 +119,21 @@ const Products = () => {
 
   const filtered = useMemo(() => {
     let result = [...products];
-    if (selectedBrands.length > 0) {
-      result = result.filter((p) => selectedBrands.includes(p.brand));
+    if (category !== "accessories") {
+      if (selectedBrands.length > 0) {
+        result = result.filter((p) => selectedBrands.includes(p.brand));
+      }
+      if (selectedRam.length > 0) {
+        result = result.filter((p) => selectedRam.includes(p.ram));
+      }
+      if (selectedStorage.length > 0) {
+        result = result.filter((p) => selectedStorage.includes(p.storage));
+      }
     }
-    if (selectedRam.length > 0) {
-      result = result.filter((p) => selectedRam.includes(p.ram));
-    }
-    if (selectedStorage.length > 0) {
-      result = result.filter((p) => selectedStorage.includes(p.storage));
-    }
-    result = result.filter((p) => p.price >= budgetRange[0] && p.price <= budgetRange[1]);
     if (sortBy === "price-low") result.sort((a, b) => a.price - b.price);
     if (sortBy === "price-high") result.sort((a, b) => b.price - a.price);
     return result;
-  }, [products, selectedBrands, selectedRam, selectedStorage, budgetRange, sortBy]);
+  }, [products, selectedBrands, selectedRam, selectedStorage, sortBy, category]);
 
   const totalPages = Math.ceil(filtered.length / perPage);
   const paginated = filtered.slice((page - 1) * perPage, page * perPage);
@@ -129,11 +154,23 @@ const Products = () => {
     setSelectedBrands([]);
     setSelectedRam([]);
     setSelectedStorage([]);
-    setBudgetRange([0, 200000]);
+    setPage(1);
+  };
+
+  const switchCategory = (cat: Category) => {
+    setCategory(cat);
+    clearFilters();
+    setSortBy("featured");
     setPage(1);
   };
 
   const hasFilters = selectedBrands.length > 0 || selectedRam.length > 0 || selectedStorage.length > 0;
+
+  const categoryLabels: Record<Category, string> = {
+    laptops: "laptops",
+    desktops: "desktops",
+    accessories: "accessories",
+  };
 
   const FilterSidebar = () => (
     <div className="space-y-6">
@@ -144,7 +181,6 @@ const Products = () => {
         )}
       </div>
 
-      {/* Brands */}
       <div>
         <h4 className="text-sm font-semibold mb-3">Brands</h4>
         <div className="flex flex-wrap gap-2">
@@ -164,7 +200,6 @@ const Products = () => {
         </div>
       </div>
 
-      {/* RAM */}
       <div>
         <h4 className="text-sm font-semibold mb-3">RAM</h4>
         <div className="flex flex-wrap gap-2">
@@ -184,7 +219,6 @@ const Products = () => {
         </div>
       </div>
 
-      {/* Storage */}
       <div>
         <h4 className="text-sm font-semibold mb-3">SSD Storage</h4>
         <div className="flex flex-wrap gap-2">
@@ -204,7 +238,6 @@ const Products = () => {
         </div>
       </div>
 
-      {/* AI Certified badge */}
       <div className="glass-card-solid gradient-border p-4 rounded-xl">
         <div className="flex items-center gap-2 mb-2">
           <ShieldCheck size={18} className="text-primary" />
@@ -221,44 +254,61 @@ const Products = () => {
       <div className="bg-gradient-to-br from-foreground to-foreground/90 text-background py-12 md:py-16">
         <div className="container mx-auto px-5 text-center">
           <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-black mb-3">
-            Premium Refurbished <span className="text-primary">Laptops</span>
+            Our <span className="text-primary">Products</span>
           </h1>
           <p className="text-background/60 text-sm md:text-base max-w-lg mx-auto">
-            Get enterprise-grade laptops at up to 60% off. Rigorously tested, certified quality, and backed by warranty.
+            Premium refurbished laptops, desktops & accessories — up to 60% off with warranty.
           </p>
-          <div className="flex items-center justify-center gap-3 mt-6">
-            <Link to="/products" className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors">
-              Shop Now
-            </Link>
-            <Link to="/repair" className="inline-flex items-center gap-2 border border-background/20 text-background px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-background/10 transition-colors">
-              Book Repair
-            </Link>
+
+          {/* Category Tabs */}
+          <div className="flex items-center justify-center gap-2 mt-8">
+            {CATEGORIES.map((cat) => {
+              const Icon = cat.icon;
+              return (
+                <button
+                  key={cat.key}
+                  onClick={() => switchCategory(cat.key)}
+                  className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                    category === cat.key
+                      ? "bg-primary text-primary-foreground shadow-lg"
+                      : "bg-background/10 text-background/70 hover:bg-background/20 border border-background/10"
+                  }`}
+                >
+                  <Icon size={16} />
+                  {cat.label}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
 
       <div className="container mx-auto px-5 mt-8">
         <div className="flex gap-6">
-          {/* Sidebar - Desktop */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="sticky top-24 glass-card-solid gradient-border p-5 rounded-2xl">
-              <FilterSidebar />
-            </div>
-          </aside>
+          {/* Sidebar - Desktop (only for laptops/desktops) */}
+          {category !== "accessories" && (
+            <aside className="hidden lg:block w-64 flex-shrink-0">
+              <div className="sticky top-24 glass-card-solid gradient-border p-5 rounded-2xl">
+                <FilterSidebar />
+              </div>
+            </aside>
+          )}
 
           {/* Main */}
           <div className="flex-1">
             {/* Top bar */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
-                <button
-                  className="lg:hidden inline-flex items-center gap-2 text-sm font-medium bg-muted/50 px-3 py-2 rounded-lg border border-border"
-                  onClick={() => setShowFilters(true)}
-                >
-                  <SlidersHorizontal size={14} /> Filters
-                </button>
+                {category !== "accessories" && (
+                  <button
+                    className="lg:hidden inline-flex items-center gap-2 text-sm font-medium bg-muted/50 px-3 py-2 rounded-lg border border-border"
+                    onClick={() => setShowFilters(true)}
+                  >
+                    <SlidersHorizontal size={14} /> Filters
+                  </button>
+                )}
                 <p className="text-sm text-muted-foreground">
-                  Showing {paginated.length} of {filtered.length} laptops
+                  Showing {paginated.length} of {filtered.length} {categoryLabels[category]}
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -287,18 +337,20 @@ const Products = () => {
             ) : paginated.length === 0 ? (
               <div className="text-center py-20">
                 <p className="text-muted-foreground">No products match your filters.</p>
-                <button onClick={clearFilters} className="mt-3 text-sm text-primary font-medium hover:underline">Clear filters</button>
+                {hasFilters && (
+                  <button onClick={clearFilters} className="mt-3 text-sm text-primary font-medium hover:underline">Clear filters</button>
+                )}
               </div>
             ) : (
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5">
+              <div className={`grid ${category === "accessories" ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-2 lg:grid-cols-3"} gap-3 md:gap-5`}>
                 {paginated.map((product, i) => (
                   <motion.div
-                    key={product.id}
+                    key={`${category}-${product.id}`}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.03, duration: 0.3 }}
                   >
-                    <ProductCard product={product} />
+                    <ProductCard product={product} category={category} />
                   </motion.div>
                 ))}
               </div>
@@ -343,7 +395,7 @@ const Products = () => {
       </div>
 
       {/* Mobile Filter Sheet */}
-      {showFilters && (
+      {showFilters && category !== "accessories" && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={() => setShowFilters(false)} />
           <div className="absolute right-0 top-0 h-full w-80 bg-card border-l border-border p-6 overflow-y-auto">
