@@ -24,7 +24,7 @@ const testimonials = [
   {
     name: "Sneha Joshi",
     role: "Graphic Designer",
-    text: "Gaming laptop liya content creation ke liye — RTX wala. Performance outstanding hai aur Bhagwan Das ji ne personally setup karke diya.",
+    text: "Gaming laptop liya content creation ke liye — RTX wala. Performance outstanding hai aur Bhagwan Das Asati ji ne personally setup karke diya.",
     rating: 5,
   },
   {
