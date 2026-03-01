@@ -1,8 +1,16 @@
 import logo from "@/assets/logo.jpeg";
 import { ChevronDown, Zap, ShieldCheck, MessageCircle, Search, MapPin, Phone, Star, Truck, Monitor, Wrench } from "lucide-react";
 import { motion } from "framer-motion";
+import { useInView } from "@/hooks/useInView";
+import { useCountUp } from "@/hooks/useCountUp";
 
-const HeroSection = () => (
+const HeroSection = () => {
+  const { ref: statsRef, inView: statsInView } = useInView();
+  const years = useCountUp(15, 2000, 0, statsInView);
+  const customers = useCountUp(5000, 2500, 0, statsInView);
+  const rating = useCountUp(48, 2000, 0, statsInView);
+
+  return (
   <section
     className="relative min-h-[100svh] flex items-center justify-center overflow-hidden"
     id="hero"
@@ -107,18 +115,19 @@ const HeroSection = () => (
 
       {/* Stats bar */}
       <motion.div
+        ref={statsRef}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.7 }}
         className="flex items-center justify-center gap-4 md:gap-8 mb-7 py-4 px-5 rounded-2xl bg-white/[0.05] backdrop-blur-sm border border-white/[0.08] max-w-md mx-auto"
       >
         {[
-          { num: "15+", label: "Years" },
-          { num: "5K+", label: "Customers" },
+          { num: `${years}+`, label: "Years" },
+          { num: customers >= 1000 ? `${(customers / 1000).toFixed(customers >= 5000 ? 0 : 1)}K+` : `${customers}+`, label: "Customers" },
           { num: "100%", label: "Genuine" },
-          { num: "4.8★", label: "Rating" },
+          { num: `${(rating / 10).toFixed(1)}★`, label: "Rating" },
         ].map((s, i) => (
-          <div key={s.num} className="flex items-center gap-3 md:gap-4">
+          <div key={s.label} className="flex items-center gap-3 md:gap-4">
             {i > 0 && <div className="w-px h-8 bg-white/10" />}
             <div className="text-center">
               <div className="font-heading text-lg md:text-xl font-extrabold text-white">{s.num}</div>
@@ -179,6 +188,7 @@ const HeroSection = () => (
       <ChevronDown size={26} />
     </a>
   </section>
-);
+  );
+};
 
 export default HeroSection;

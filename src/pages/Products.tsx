@@ -3,7 +3,7 @@ import { useProducts, Product } from "@/hooks/useProducts";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
-  Monitor, MessageCircle, Loader2, SlidersHorizontal, X, ChevronLeft, ChevronRight, ArrowUpDown, ShieldCheck, Laptop, PcCase, Headphones
+  Monitor, MessageCircle, Loader2, SlidersHorizontal, X, ChevronLeft, ChevronRight, ArrowUpDown, ShieldCheck, Laptop, PcCase, Headphones, Search
 } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 
@@ -118,12 +118,21 @@ const Products = () => {
   const [selectedRam, setSelectedRam] = useState<number[]>([]);
   const [selectedStorage, setSelectedStorage] = useState<number[]>([]);
   const [sortBy, setSortBy] = useState<"featured" | "price-low" | "price-high">("featured");
+  const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
   const perPage = 12;
 
   const filtered = useMemo(() => {
     let result = [...products];
+    // Search filter
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter((p) => {
+        const name = category === "accessories" ? (p.name || "") : `${p.brand} ${p.model}`;
+        return name.toLowerCase().includes(q) || (p.processor || "").toLowerCase().includes(q) || (p.brand || "").toLowerCase().includes(q);
+      });
+    }
     if (category !== "accessories") {
       if (selectedBrands.length > 0) result = result.filter((p) => selectedBrands.includes(p.brand));
       if (selectedRam.length > 0) result = result.filter((p) => selectedRam.includes(p.ram));
@@ -132,7 +141,7 @@ const Products = () => {
     if (sortBy === "price-low") result.sort((a, b) => a.price - b.price);
     if (sortBy === "price-high") result.sort((a, b) => b.price - a.price);
     return result;
-  }, [products, selectedBrands, selectedRam, selectedStorage, sortBy, category]);
+  }, [products, selectedBrands, selectedRam, selectedStorage, sortBy, category, searchQuery]);
 
   const totalPages = Math.ceil(filtered.length / perPage);
   const paginated = filtered.slice((page - 1) * perPage, page * perPage);
@@ -140,9 +149,9 @@ const Products = () => {
   const toggleBrand = (b: string) => { setSelectedBrands((prev) => prev.includes(b) ? prev.filter((x) => x !== b) : [...prev, b]); setPage(1); };
   const toggleRam = (r: number) => { setSelectedRam((prev) => prev.includes(r) ? prev.filter((x) => x !== r) : [...prev, r]); setPage(1); };
   const toggleStorage = (s: number) => { setSelectedStorage((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]); setPage(1); };
-  const clearFilters = () => { setSelectedBrands([]); setSelectedRam([]); setSelectedStorage([]); setPage(1); };
+  const clearFilters = () => { setSelectedBrands([]); setSelectedRam([]); setSelectedStorage([]); setSearchQuery(""); setPage(1); };
   const switchCategory = (cat: Category) => { setCategory(cat); clearFilters(); setSortBy("featured"); setPage(1); };
-  const hasFilters = selectedBrands.length > 0 || selectedRam.length > 0 || selectedStorage.length > 0;
+  const hasFilters = selectedBrands.length > 0 || selectedRam.length > 0 || selectedStorage.length > 0 || searchQuery.trim().length > 0;
 
   const categoryLabels: Record<Category, string> = { laptops: "laptops", desktops: "desktops", accessories: "accessories" };
 
@@ -259,6 +268,23 @@ const Products = () => {
                 </button>
               );
             })}
+          </div>
+
+          {/* Search Bar */}
+          <div className="relative max-w-md mx-auto mt-6">
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-background/40" />
+            <input
+              type="text"
+              placeholder="Search laptops, brands, models..."
+              value={searchQuery}
+              onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+              className="w-full pl-10 pr-4 py-3 rounded-xl bg-background/10 border border-background/20 text-background placeholder:text-background/40 text-sm font-medium focus:outline-none focus:border-primary/50 focus:bg-background/15 transition-all"
+            />
+            {searchQuery && (
+              <button onClick={() => { setSearchQuery(""); setPage(1); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-background/40 hover:text-background transition-colors">
+                <X size={14} />
+              </button>
+            )}
           </div>
         </div>
       </div>
