@@ -28,81 +28,88 @@ const ProductCard = ({ product, category }: { product: Product; category: Catego
     : `${product.brand} ${product.model}`;
 
   return (
-    <motion.div
-      whileHover={{ y: -4 }}
-      className="glass-card-solid glow-cyan-hover gradient-border rounded-2xl overflow-hidden touch-card group"
-    >
-      <div className="relative h-40 md:h-48 overflow-hidden bg-muted/30">
-        {product.primaryImage ? (
-          <img
-            src={product.primaryImage}
-            alt={productName}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            loading="lazy"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <Monitor size={40} className="text-muted-foreground/30" />
-          </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-card/50 to-transparent" />
-        {product.stockQuantity > 0 && product.stockQuantity <= 5 && (
-          <span className="absolute top-2.5 left-2.5 text-[10px] font-bold uppercase tracking-wider bg-destructive text-destructive-foreground px-2.5 py-1 rounded-lg">
-            Only {product.stockQuantity} left
-          </span>
-        )}
-        {discount > 0 && (
-          <span className="absolute top-2.5 right-2.5 text-[10px] font-bold bg-primary text-primary-foreground px-2.5 py-1 rounded-lg">
-            {discount}% OFF
-          </span>
-        )}
-      </div>
-      <div className="p-4">
-        <h3 className="font-heading text-sm md:text-base font-bold mb-2 leading-tight text-foreground">
-          {productName}
-        </h3>
-        {category !== "accessories" && (
-          <div className="flex flex-wrap gap-1.5 mb-3">
-            {product.ram > 0 && (
-              <span className="text-[10px] bg-muted px-2 py-0.5 rounded-md text-muted-foreground font-medium">{product.ram}GB RAM</span>
-            )}
-            {product.storage > 0 && (
-              <span className="text-[10px] bg-muted px-2 py-0.5 rounded-md text-muted-foreground font-medium">{product.storage}GB {product.storageType || 'SSD'}</span>
-            )}
-            {product.processor && (
-              <span className="text-[10px] bg-muted px-2 py-0.5 rounded-md text-muted-foreground font-medium">{product.processor}</span>
-            )}
-          </div>
-        )}
-        {product.price > 0 ? (
-          <>
-            {discount > 0 && (
-              <div className="flex items-baseline gap-2 mb-1">
-                <span className="text-xs text-muted-foreground line-through">₹{product.originalPrice.toLocaleString('en-IN')}</span>
-              </div>
-            )}
-            <div className="flex items-baseline gap-2 mb-3">
-              <span className="font-heading text-lg md:text-xl font-bold text-primary">₹{product.price.toLocaleString('en-IN')}</span>
+    <Link to={`/products/${category}/${product.id}`}>
+      <motion.div
+        whileHover={{ y: -4 }}
+        className="glass-card-solid glow-cyan-hover gradient-border rounded-2xl overflow-hidden touch-card group"
+      >
+        <div className="relative h-40 md:h-48 overflow-hidden bg-muted/30">
+          {product.primaryImage ? (
+            <img
+              src={product.primaryImage}
+              alt={productName}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              loading="lazy"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <Monitor size={40} className="text-muted-foreground/30" />
             </div>
-          </>
-        ) : (
-          <div className="mb-3">
-            <span className="text-sm font-semibold text-primary">Contact for Price</span>
-          </div>
-        )}
-        {category !== "accessories" && product.condition && (
-          <p className="text-[10px] text-muted-foreground mb-3">{product.condition}</p>
-        )}
-        <a
-          href={`https://wa.me/919893496163?text=Hi%2C%20I'm%20interested%20in%20${encodeURIComponent(productName)}${product.price > 0 ? `%20(₹${product.price})` : ''}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 w-full rounded-xl bg-[hsl(142,70%,45%)] py-2.5 text-xs font-bold text-white hover:bg-[hsl(142,70%,40%)] transition-colors active:scale-95"
-        >
-          <MessageCircle size={14} /> Buy on WhatsApp
-        </a>
-      </div>
-    </motion.div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-card/50 to-transparent" />
+          {product.stockQuantity > 0 && product.stockQuantity <= 5 && (
+            <span className="absolute top-2.5 left-2.5 text-[10px] font-bold uppercase tracking-wider bg-destructive text-destructive-foreground px-2.5 py-1 rounded-lg">
+              Only {product.stockQuantity} left
+            </span>
+          )}
+          {discount > 0 && (
+            <span className="absolute top-2.5 right-2.5 text-[10px] font-bold bg-primary text-primary-foreground px-2.5 py-1 rounded-lg">
+              {discount}% OFF
+            </span>
+          )}
+        </div>
+        <div className="p-4">
+          <h3 className="font-heading text-sm md:text-base font-bold mb-2 leading-tight text-foreground">
+            {productName}
+          </h3>
+          {category !== "accessories" && (
+            <div className="flex flex-wrap gap-1.5 mb-3">
+              {product.ram > 0 && (
+                <span className="text-[10px] bg-muted px-2 py-0.5 rounded-md text-muted-foreground font-medium">{product.ram}GB RAM</span>
+              )}
+              {product.storage > 0 && (
+                <span className="text-[10px] bg-muted px-2 py-0.5 rounded-md text-muted-foreground font-medium">{product.storage}GB {product.storageType || 'SSD'}</span>
+              )}
+              {product.processor && (
+                <span className="text-[10px] bg-muted px-2 py-0.5 rounded-md text-muted-foreground font-medium">{product.processor}</span>
+              )}
+            </div>
+          )}
+          {product.price > 0 ? (
+            <>
+              {discount > 0 && (
+                <div className="flex items-baseline gap-2 mb-1">
+                  <span className="text-xs text-muted-foreground line-through">₹{product.originalPrice.toLocaleString('en-IN')}</span>
+                </div>
+              )}
+              <div className="flex items-baseline gap-2 mb-3">
+                <span className="font-heading text-lg md:text-xl font-bold text-primary">₹{product.price.toLocaleString('en-IN')}</span>
+              </div>
+            </>
+          ) : (
+            <div className="mb-3">
+              <span className="text-sm font-semibold text-primary">Contact for Price</span>
+            </div>
+          )}
+          {category !== "accessories" && product.condition && (
+            <p className="text-[10px] text-muted-foreground mb-3">{product.condition}</p>
+          )}
+          <span
+            onClick={(e) => e.stopPropagation()}
+            className="block"
+          >
+            <a
+              href={`https://wa.me/919893496163?text=Hi%2C%20I'm%20interested%20in%20${encodeURIComponent(productName)}${product.price > 0 ? `%20(₹${product.price})` : ''}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full rounded-xl bg-[hsl(142,70%,45%)] py-2.5 text-xs font-bold text-white hover:bg-[hsl(142,70%,40%)] transition-colors active:scale-95"
+            >
+              <MessageCircle size={14} /> Buy on WhatsApp
+            </a>
+          </span>
+        </div>
+      </motion.div>
+    </Link>
   );
 };
 
