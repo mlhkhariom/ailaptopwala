@@ -77,10 +77,30 @@ const Footer = () => (
         </div>
       </div>
 
-      <div className="border-t border-background/10 pt-6 text-center">
-        <p className="text-xs text-background/40">
-          © 2026 AI Laptop Wala | Powered by Asati Infotech. All Rights Reserved.
-        </p>
+      <div className="border-t border-background/10 pt-6">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-background/40">
+            © 2026 AI Laptop Wala | Powered by Asati Infotech. All Rights Reserved.
+          </p>
+          
+          {/* Crafted By */}
+          <div className="flex items-center gap-2 group">
+            <span className="text-xs text-background/40">Crafted with</span>
+            <svg className="w-3 h-3 text-red-500 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+            </svg>
+            <span className="text-xs text-background/40">by</span>
+            <a 
+              href="https://mlhk.in" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-1 group-hover:gap-2 duration-300"
+            >
+              Hariom Vishwkarma
+              <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </footer>
