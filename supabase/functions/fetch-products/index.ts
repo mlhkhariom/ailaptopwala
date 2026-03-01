@@ -21,7 +21,6 @@ serve(async (req) => {
       throw new Error('Database configuration missing');
     }
 
-    // Use Deno's postgres driver
     const { Client } = await import("https://deno.land/x/postgres@v0.19.3/mod.ts");
     
     const client = new Client({
@@ -41,8 +40,7 @@ serve(async (req) => {
     const offset = parseInt(url.searchParams.get('offset') || '0');
     const brand = url.searchParams.get('brand');
 
-    // Only allow specific tables
-    const allowedTables = ['laptops', 'desktops'];
+    const allowedTables = ['laptops', 'desktops', 'accessories'];
     if (!allowedTables.includes(table)) {
       throw new Error('Invalid table name');
     }
@@ -50,7 +48,7 @@ serve(async (req) => {
     let query = `SELECT * FROM ${table}`;
     const params: string[] = [];
     
-    if (brand) {
+    if (brand && table !== 'accessories') {
       params.push(brand);
       query += ` WHERE LOWER(brand) = LOWER($${params.length})`;
     }
@@ -60,10 +58,9 @@ serve(async (req) => {
 
     const result = await client.queryObject(query, params);
     
-    // Get total count
     let countQuery = `SELECT COUNT(*) as total FROM ${table}`;
     const countParams: string[] = [];
-    if (brand) {
+    if (brand && table !== 'accessories') {
       countParams.push(brand);
       countQuery += ` WHERE LOWER(brand) = LOWER($1)`;
     }
@@ -72,27 +69,56 @@ serve(async (req) => {
 
     await client.end();
 
-    // Transform data
-    const products = result.rows.map((row: any) => ({
-      id: row.row_number,
-      brand: row.brand,
-      model: row.model,
-      processor: row.processor,
-      ram: row.ram_gb,
-      storage: row.storage_gb,
-      storageType: row.storage_type,
-      screenSize: row.screen_size,
-      graphics: row.graphics,
-      condition: row.condition,
-      price: row.price_range ? parseInt(row.price_range.split('-')[0]) : 0,
-      originalPrice: row.price_range ? parseInt(row.price_range.split('-')[1] || row.price_range.split('-')[0]) : 0,
-      stockQuantity: row.stock_quantity,
-      specialFeature: row.special_feature,
-      warranty: row.warranty_in_months,
-      primaryImage: row.image_url_1,
-      secondaryImage: row.image_url_2,
-      generation: row.generation,
-    }));
+    // Parse price range helper
+    const parsePrice = (priceStr: string | null): number => {
+      if (!priceStr) return 0;
+      const cleaned = priceStr.replace(/[₹,\s]/g, '');
+      const parts = cleaned.split('-');
+      return parseInt(parts[0]) || 0;
+    };
+
+    const parseOriginalPrice = (priceStr: string | null): number => {
+      if (!priceStr) return 0;
+      const cleaned = priceStr.replace(/[₹,\s]/g, '');
+      const parts = cleaned.split('-');
+      return parseInt(parts[1] || parts[0]) || 0;
+    };
+
+    let products;
+
+    if (table === 'accessories') {
+      products = result.rows.map((row: any) => ({
+        id: row.row_number,
+        name: row.accessories_name || '',
+        price: parsePrice(row.price_range_inr),
+        originalPrice: parseOriginalPrice(row.price_range_inr),
+        primaryImage: row.image_url_1 || '',
+        secondaryImage: row.image_url_2 || null,
+        type: 'accessory',
+      }));
+    } else {
+      products = result.rows.map((row: any) => ({
+        id: row.row_number,
+        brand: row.brand,
+        model: row.model,
+        processor: row.processor,
+        ram: row.ram_gb,
+        storage: row.storage_gb,
+        storageType: row.storage_type,
+        screenSize: row.screen_size,
+        graphics: row.graphics,
+        condition: row.condition,
+        price: parsePrice(row.price_range),
+        originalPrice: parseOriginalPrice(row.price_range),
+        stockQuantity: row.stock_quantity,
+        specialFeature: row.special_feature,
+        warranty: row.warranty_in_months,
+        primaryImage: row.image_url_1,
+        secondaryImage: row.image_url_2,
+        generation: row.generation,
+        type: table === 'desktops' ? 'desktop' : 'laptop',
+      }));
+    }
 
     return new Response(JSON.stringify({ products, total }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

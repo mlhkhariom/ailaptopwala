@@ -4,6 +4,7 @@ export interface Product {
   id: number;
   brand: string;
   model: string;
+  name?: string;
   processor: string;
   ram: number;
   storage: number;
@@ -19,12 +20,13 @@ export interface Product {
   primaryImage: string;
   secondaryImage: string;
   generation: string;
+  type?: string;
 }
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
-export function useProducts(table: "laptops" | "desktops" = "laptops", limit = 50, brand?: string) {
+export function useProducts(table: "laptops" | "desktops" | "accessories" = "laptops", limit = 50, brand?: string) {
   const [products, setProducts] = useState<Product[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
