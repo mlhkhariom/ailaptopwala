@@ -1,6 +1,7 @@
 import { useInView } from "@/hooks/useInView";
 import { useProducts, Product } from "@/hooks/useProducts";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Apple, Gamepad2, RefreshCcw, Monitor, Briefcase, Bot, ArrowRight, MessageCircle, Loader2 } from "lucide-react";
 import macbookImg from "@/assets/macbook.jpg";
 import gamingImg from "@/assets/gaming-laptop.jpg";
@@ -24,66 +25,70 @@ const ProductCard = ({ product }: { product: Product }) => {
     : 0;
 
   return (
-    <motion.div
-      whileHover={{ y: -4 }}
-      className="glass-card-solid glow-cyan-hover gradient-border rounded-2xl overflow-hidden touch-card"
-    >
-      <div className="relative h-36 md:h-44 overflow-hidden bg-muted/30">
-        {product.primaryImage ? (
-          <img
-            src={product.primaryImage}
-            alt={`${product.brand} ${product.model}`}
-            className="w-full h-full object-cover"
-            loading="lazy"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <Monitor size={40} className="text-muted-foreground/30" />
-          </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-card/60 to-transparent" />
-        {product.stockQuantity <= 5 && product.stockQuantity > 0 && (
-          <span className="absolute top-2 left-2 text-[9px] md:text-[10px] font-bold uppercase tracking-wider bg-destructive text-destructive-foreground px-2 py-0.5 rounded-full">
-            Only {product.stockQuantity} left
-          </span>
-        )}
-        {discount > 0 && (
-          <span className="absolute top-2 right-2 text-[9px] md:text-[10px] font-bold bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
-            {discount}% OFF
-          </span>
-        )}
-      </div>
-      <div className="p-3 md:p-4">
-        <h3 className="font-heading text-sm md:text-base font-bold mb-1 leading-tight text-foreground truncate">
-          {product.brand} {product.model}
-        </h3>
-        <div className="flex flex-wrap gap-1 mb-2">
-          {product.processor && (
-            <span className="text-[9px] md:text-[10px] bg-muted px-1.5 py-0.5 rounded text-muted-foreground">{product.processor}</span>
+    <Link to={`/products/laptops/${product.id}`}>
+      <motion.div
+        whileHover={{ y: -4 }}
+        className="glass-card-solid glow-cyan-hover gradient-border rounded-2xl overflow-hidden touch-card"
+      >
+        <div className="relative h-36 md:h-44 overflow-hidden bg-muted/30">
+          {product.primaryImage ? (
+            <img
+              src={product.primaryImage}
+              alt={`${product.brand} ${product.model}`}
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <Monitor size={40} className="text-muted-foreground/30" />
+            </div>
           )}
-          {product.ram > 0 && (
-            <span className="text-[9px] md:text-[10px] bg-muted px-1.5 py-0.5 rounded text-muted-foreground">{product.ram}GB RAM</span>
+          <div className="absolute inset-0 bg-gradient-to-t from-card/60 to-transparent" />
+          {product.stockQuantity <= 5 && product.stockQuantity > 0 && (
+            <span className="absolute top-2 left-2 text-[9px] md:text-[10px] font-bold uppercase tracking-wider bg-destructive text-destructive-foreground px-2 py-0.5 rounded-full">
+              Only {product.stockQuantity} left
+            </span>
           )}
-          {product.storage > 0 && (
-            <span className="text-[9px] md:text-[10px] bg-muted px-1.5 py-0.5 rounded text-muted-foreground">{product.storage}GB {product.storageType || 'SSD'}</span>
-          )}
-        </div>
-        <div className="flex items-baseline gap-2 mb-2">
-          <span className="font-heading text-base md:text-lg font-bold text-primary">₹{product.price.toLocaleString('en-IN')}</span>
           {discount > 0 && (
-            <span className="text-[10px] md:text-xs text-muted-foreground line-through">₹{product.originalPrice.toLocaleString('en-IN')}</span>
+            <span className="absolute top-2 right-2 text-[9px] md:text-[10px] font-bold bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
+              {discount}% OFF
+            </span>
           )}
         </div>
-        <a
-          href={`https://wa.me/919893496163?text=Hi%2C%20I'm%20interested%20in%20${encodeURIComponent(product.brand + ' ' + product.model)}%20(₹${product.price})`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center gap-1.5 w-full rounded-xl bg-[hsl(142,70%,45%)]/10 border border-[hsl(142,70%,45%)]/20 py-2 text-[10px] md:text-xs font-semibold text-[hsl(142,70%,45%)] hover:bg-[hsl(142,70%,45%)]/20 transition-colors active:scale-95"
-        >
-          <MessageCircle size={12} /> Buy on WhatsApp
-        </a>
-      </div>
-    </motion.div>
+        <div className="p-3 md:p-4">
+          <h3 className="font-heading text-sm md:text-base font-bold mb-1 leading-tight text-foreground truncate">
+            {product.brand} {product.model}
+          </h3>
+          <div className="flex flex-wrap gap-1 mb-2">
+            {product.processor && (
+              <span className="text-[9px] md:text-[10px] bg-muted px-1.5 py-0.5 rounded text-muted-foreground">{product.processor}</span>
+            )}
+            {product.ram > 0 && (
+              <span className="text-[9px] md:text-[10px] bg-muted px-1.5 py-0.5 rounded text-muted-foreground">{product.ram}GB RAM</span>
+            )}
+            {product.storage > 0 && (
+              <span className="text-[9px] md:text-[10px] bg-muted px-1.5 py-0.5 rounded text-muted-foreground">{product.storage}GB {product.storageType || 'SSD'}</span>
+            )}
+          </div>
+          <div className="flex items-baseline gap-2 mb-2">
+            <span className="font-heading text-base md:text-lg font-bold text-primary">₹{product.price.toLocaleString('en-IN')}</span>
+            {discount > 0 && (
+              <span className="text-[10px] md:text-xs text-muted-foreground line-through">₹{product.originalPrice.toLocaleString('en-IN')}</span>
+            )}
+          </div>
+          <span onClick={(e) => e.stopPropagation()} className="block">
+            <a
+              href={`https://wa.me/919893496163?text=Hi%2C%20I'm%20interested%20in%20${encodeURIComponent(product.brand + ' ' + product.model)}%20(₹${product.price})`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-1.5 w-full rounded-xl bg-[hsl(142,70%,45%)]/10 border border-[hsl(142,70%,45%)]/20 py-2 text-[10px] md:text-xs font-semibold text-[hsl(142,70%,45%)] hover:bg-[hsl(142,70%,45%)]/20 transition-colors active:scale-95"
+            >
+              <MessageCircle size={12} /> Buy on WhatsApp
+            </a>
+          </span>
+        </div>
+      </motion.div>
+    </Link>
   );
 };
 

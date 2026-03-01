@@ -39,12 +39,81 @@ serve(async (req) => {
     const limit = parseInt(url.searchParams.get('limit') || '50');
     const offset = parseInt(url.searchParams.get('offset') || '0');
     const brand = url.searchParams.get('brand');
+    const singleId = url.searchParams.get('id');
 
     const allowedTables = ['laptops', 'desktops', 'accessories'];
     if (!allowedTables.includes(table)) {
       throw new Error('Invalid table name');
     }
 
+    // Parse price range helper
+    const parsePrice = (priceStr: string | null): number => {
+      if (!priceStr) return 0;
+      const cleaned = priceStr.replace(/[₹,\s]/g, '');
+      const parts = cleaned.split('-');
+      return parseInt(parts[0]) || 0;
+    };
+
+    const parseOriginalPrice = (priceStr: string | null): number => {
+      if (!priceStr) return 0;
+      const cleaned = priceStr.replace(/[₹,\s]/g, '');
+      const parts = cleaned.split('-');
+      return parseInt(parts[1] || parts[0]) || 0;
+    };
+
+    const mapRow = (row: any) => {
+      if (table === 'accessories') {
+        return {
+          id: row.row_number,
+          name: row.accessories_name || '',
+          price: parsePrice(row.price_range_inr),
+          originalPrice: parseOriginalPrice(row.price_range_inr),
+          primaryImage: row.image_url_1 || '',
+          secondaryImage: row.image_url_2 || null,
+          type: 'accessory',
+        };
+      }
+      return {
+        id: row.row_number,
+        brand: row.brand,
+        model: row.model,
+        processor: row.processor,
+        ram: row.ram_gb,
+        storage: row.storage_gb,
+        storageType: row.storage_type,
+        screenSize: row.screen_size,
+        graphics: row.graphics,
+        condition: row.condition,
+        price: parsePrice(row.price_range),
+        originalPrice: parseOriginalPrice(row.price_range),
+        stockQuantity: row.stock_quantity,
+        specialFeature: row.special_feature,
+        warranty: row.warranty_in_months,
+        primaryImage: row.image_url_1,
+        secondaryImage: row.image_url_2,
+        generation: row.generation,
+        type: table === 'desktops' ? 'desktop' : 'laptop',
+      };
+    };
+
+    // Single product fetch
+    if (singleId) {
+      const result = await client.queryObject(`SELECT * FROM ${table} WHERE row_number = $1 LIMIT 1`, [parseInt(singleId)]);
+      await client.end();
+
+      if (result.rows.length === 0) {
+        return new Response(JSON.stringify({ error: 'Product not found' }), {
+          status: 404,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      return new Response(JSON.stringify({ product: mapRow(result.rows[0]) }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // List products
     let query = `SELECT * FROM ${table}`;
     const params: string[] = [];
     
@@ -69,56 +138,7 @@ serve(async (req) => {
 
     await client.end();
 
-    // Parse price range helper
-    const parsePrice = (priceStr: string | null): number => {
-      if (!priceStr) return 0;
-      const cleaned = priceStr.replace(/[₹,\s]/g, '');
-      const parts = cleaned.split('-');
-      return parseInt(parts[0]) || 0;
-    };
-
-    const parseOriginalPrice = (priceStr: string | null): number => {
-      if (!priceStr) return 0;
-      const cleaned = priceStr.replace(/[₹,\s]/g, '');
-      const parts = cleaned.split('-');
-      return parseInt(parts[1] || parts[0]) || 0;
-    };
-
-    let products;
-
-    if (table === 'accessories') {
-      products = result.rows.map((row: any) => ({
-        id: row.row_number,
-        name: row.accessories_name || '',
-        price: parsePrice(row.price_range_inr),
-        originalPrice: parseOriginalPrice(row.price_range_inr),
-        primaryImage: row.image_url_1 || '',
-        secondaryImage: row.image_url_2 || null,
-        type: 'accessory',
-      }));
-    } else {
-      products = result.rows.map((row: any) => ({
-        id: row.row_number,
-        brand: row.brand,
-        model: row.model,
-        processor: row.processor,
-        ram: row.ram_gb,
-        storage: row.storage_gb,
-        storageType: row.storage_type,
-        screenSize: row.screen_size,
-        graphics: row.graphics,
-        condition: row.condition,
-        price: parsePrice(row.price_range),
-        originalPrice: parseOriginalPrice(row.price_range),
-        stockQuantity: row.stock_quantity,
-        specialFeature: row.special_feature,
-        warranty: row.warranty_in_months,
-        primaryImage: row.image_url_1,
-        secondaryImage: row.image_url_2,
-        generation: row.generation,
-        type: table === 'desktops' ? 'desktop' : 'laptop',
-      }));
-    }
+    const products = result.rows.map(mapRow);
 
     return new Response(JSON.stringify({ products, total }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
