@@ -6,9 +6,9 @@ const details = [
   { icon: Building2, label: "Legal Name", value: "Asati Infotech" },
   { icon: Award, label: "Brand Name", value: "AI Laptop Wala" },
   { icon: User, label: "Founder/Owner", value: "Bhagwan Das Asati" },
-  { icon: Briefcase, label: "CEO/Manager", value: "Nitin Asati" },
+  { icon: Briefcase, label: "CEO & Manager", value: "Nitin Asati" },
   { icon: Hash, label: "GST Number", value: "23ATNPA4415H1Z2" },
-  { icon: Calendar, label: "Established", value: "July 2017" },
+  { icon: Calendar, label: "Established", value: "2011" },
 ];
 
 const BusinessDetails = () => {
