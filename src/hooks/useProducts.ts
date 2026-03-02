@@ -23,8 +23,7 @@ export interface Product {
   type?: string;
 }
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://dthlunjjxegdcpikighl.supabase.co/functions/v1';
 
 export function useProducts(table: "laptops" | "desktops" | "accessories" = "laptops", limit = 50, brand?: string) {
   const [products, setProducts] = useState<Product[]>([]);
@@ -37,21 +36,47 @@ export function useProducts(table: "laptops" | "desktops" | "accessories" = "lap
       setLoading(true);
       setError(null);
       try {
-        const params = new URLSearchParams({ table, limit: String(limit) });
-        if (brand) params.set("brand", brand);
+        // Map table name to action
+        const actionMap = {
+          laptops: 'get-laptop',
+          desktops: 'get-desktops',
+          accessories: 'get-accessories'
+        };
 
-        const res = await fetch(`${SUPABASE_URL}/functions/v1/fetch-products?${params}`, {
-          headers: {
-            apikey: SUPABASE_KEY,
-            "Content-Type": "application/json",
-          },
+        const res = await fetch(`${API_BASE_URL}/postgres-api`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: actionMap[table] })
         });
 
         if (!res.ok) throw new Error("Failed to fetch products");
 
-        const data = await res.json();
-        setProducts(data.products || []);
-        setTotal(data.total || 0);
+        const rawData = await res.json();
+        
+        // Transform data to match Product interface
+        const transformedProducts = rawData.map((item: any) => ({
+          id: item.row_number,
+          brand: item.brand || '',
+          model: item.model || '',
+          processor: item.processor || '',
+          ram: item.ram_gb || 0,
+          storage: item.storage_gb || 0,
+          storageType: item.storage_type || '',
+          screenSize: item.screen_size || '',
+          graphics: item.graphics || '',
+          condition: item.condition || '',
+          price: parseInt(item.price_range?.split('-')[0]?.replace(/[^0-9]/g, '') || '0'),
+          originalPrice: parseInt(item.price_range?.split('-')[1]?.replace(/[^0-9]/g, '') || '0'),
+          stockQuantity: item.stock_quantity || 0,
+          specialFeature: item.special_feature || '',
+          warranty: item.warranty_in_months || 0,
+          primaryImage: item.image_url_1 || '',
+          secondaryImage: item.image_url_2 || '',
+          generation: item.generation || ''
+        }));
+
+        setProducts(transformedProducts);
+        setTotal(transformedProducts.length);
       } catch (err: any) {
         setError(err.message);
         console.error("Product fetch error:", err);
