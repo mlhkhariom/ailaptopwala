@@ -494,9 +494,9 @@ function normalizeToChatMessage(raw: NormalizedMessage): ChatMessage {
 async function fetchAllMessages(): Promise<NormalizedMessage[]> {
   const rawMessages = await callApi<RawChatMessage[]>('get-chats');
   
-  // Fetch names separately from API
+  // Fetch names separately via nginx proxy
   try {
-    const namesResponse = await fetch(`${API_BASE_URL}/postgres-api`, {
+    const namesResponse = await fetch('https://ailaptopwala.com/api/postgres-api', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'get-contact-names' })
