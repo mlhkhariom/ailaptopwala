@@ -494,9 +494,9 @@ function normalizeToChatMessage(raw: NormalizedMessage): ChatMessage {
 async function fetchAllMessages(): Promise<NormalizedMessage[]> {
   const rawMessages = await callApi<RawChatMessage[]>('get-chats');
   
-  // Fetch names separately from local server
+  // Fetch names separately from VPS server
   try {
-    const namesResponse = await fetch('http://localhost:54321/functions/v1/postgres-api', {
+    const namesResponse = await fetch('http://84.247.179.14:54321/functions/v1/postgres-api', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'get-contact-names' })
