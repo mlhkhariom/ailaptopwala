@@ -8,8 +8,7 @@ import {
 import { Product } from "@/hooks/useProducts";
 import SEOHead from "@/components/SEOHead";
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://dthlunjjxegdcpikighl.supabase.co/functions/v1';
 
 type Category = "laptops" | "desktops" | "accessories";
 
@@ -27,15 +26,48 @@ const ProductDetail = () => {
       setLoading(true);
       setError(null);
       try {
-        const params = new URLSearchParams({ table: cat, id: id || "" });
-        const res = await fetch(`${SUPABASE_URL}/functions/v1/fetch-products?${params}`, {
-          headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" },
+        const actionMap = {
+          laptops: 'get-laptop',
+          desktops: 'get-desktops',
+          accessories: 'get-accessories'
+        };
+
+        const res = await fetch(`${API_BASE_URL}/postgres-api`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: actionMap[cat] })
         });
+
         if (!res.ok) throw new Error("Failed to fetch product");
-        const data = await res.json();
-        if (data.product) setProduct(data.product);
-        else if (data.products?.length > 0) setProduct(data.products[0]);
-        else throw new Error("Product not found");
+        
+        const rawData = await res.json();
+        const foundProduct = rawData.find((item: any) => item.row_number === parseInt(id || '0'));
+        
+        if (!foundProduct) throw new Error("Product not found");
+
+        // Transform to Product interface
+        const transformedProduct: Product = {
+          id: foundProduct.row_number,
+          brand: foundProduct.brand || '',
+          model: foundProduct.model || '',
+          processor: foundProduct.processor || '',
+          ram: foundProduct.ram_gb || 0,
+          storage: foundProduct.storage_gb || 0,
+          storageType: foundProduct.storage_type || '',
+          screenSize: foundProduct.screen_size || '',
+          graphics: foundProduct.graphics || '',
+          condition: foundProduct.condition || '',
+          price: parseInt(foundProduct.price_range?.split('-')[0]?.replace(/[^0-9]/g, '') || '0'),
+          originalPrice: parseInt(foundProduct.price_range?.split('-')[1]?.replace(/[^0-9]/g, '') || '0'),
+          stockQuantity: foundProduct.stock_quantity || 0,
+          specialFeature: foundProduct.special_feature || '',
+          warranty: foundProduct.warranty_in_months || 0,
+          primaryImage: foundProduct.image_url_1 || '',
+          secondaryImage: foundProduct.image_url_2 || '',
+          generation: foundProduct.generation || ''
+        };
+
+        setProduct(transformedProduct);
       } catch (err: any) {
         setError(err.message);
       } finally {
